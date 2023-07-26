@@ -28,6 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['mirzokiroff.netlify.app']
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
