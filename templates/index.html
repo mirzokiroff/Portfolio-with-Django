@@ -1,436 +1,515 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block container %}
-    <body>
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo">
+        <a href="{% url 'user' users.username %}">DevFolio</a>
+      </h1>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto active" href="#">Home</a></li>
+          <li><a class="nav-link scrollto" href="#about">About</a></li>
+          <li><a class="nav-link scrollto" href="#services">Services</a></li>
+          <li><a class="nav-link scrollto" href="#work">Work</a></li>
+          {% if request.user.is_authenticated and users.id == request.user.id %}
+            <li class="dropdown">
+              <a href=""><span>{{ users.username }}</span>
+                <i class="bi bi-chevron-down"></i>
+              </a>
+              <ul>
+                <li><a href="">{{ users.get_full_name }}</a></li>
+                <li class="dropdown">
+                  <a><span>Update</span>
+                    <i class="bi bi-chevron-right"></i>
+                  </a>
+                  <ul>
+                    <li><a href="{% url 'update' %}">Update User</a></li>
+                    <li><a href="{% url 'add-skill' %}">Add Skill</a></li>
+                    <li><a href="{% url 'add-blog' %}">Add Blog</a></li>
+                    <li><a href="{% url 'add-portfolio' %}">Add Portfolio</a></li>
+                    <li><a href="{% url 'add-service' %}">Add Service</a></li>
+                    <li><a href="{% url 'add-statistic' %}">Add Statistic</a></li>
+                  </ul>
+                </li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+              </ul>
+            </li>
+          {% endif %}
+          <li><a class="nav-link scrollto" href="#blog">Blog</a></li>
+          <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+          {% if not request.user.is_authenticated or users.id != request.user.id %}
+            <li>
+              <a
+                class="nav-link scrollto"
+                href="{% url 'partner-comment' username %}"
+                >Partner Comment</a>
+            </li>
+          {% endif %}
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav>
+      <!-- .navbar -->
+    </div>
+  </header>
+  <!-- End Header -->
 
-    <!-- ======= Header ======= -->
-    <!-- End Header -->
+  <!-- ======= Hero Section ======= -->
+  <div id="hero" class="hero route bg-image" style="background-image: url({{ users.image.url }})">
+    <div class="overlay-itro"></div>
+    <div class="hero-content display-table">
+      <div class="table-cell">
+        <div class="container">
+          <h1 class="hero-title mb-4">I am {{ users.get_full_name }}</h1>
+          <p class="hero-subtitle">
+            <span
+              class="typed"
+              data-typed-items="Backend Developer, Freelancer, Python Developer, ">
+            </span>
+          </p>
+          <p class="pt-3">
+            <a
+              class="btn btn-primary btn js-scroll px-4"
+              href="#about"
+              role="button"
+              >Learn More
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Hero Section -->
 
-    <!-- ======= Hero Section ======= -->
-    <div id="hero" class="hero route bg-image" style="background-image: url({% static 'img/hero-bg.jpg' %})">
-        <div class="overlay-itro"></div>
-        <div class="hero-content display-table">
-            <div class="table-cell">
-                <div class="container">
-                    <!--<p class="display-6 color-d">Hello, world!</p>-->
-                    <h1 class="hero-title mb-4">I am Mirsidiq Mirzokirov</h1>
-                    <p class="hero-subtitle"><span class="typed"
-                                                   data-typed-items="Python, Django, C++, Django Rest Framework, PostgreSQL, Developer, Freelancer, Git, Docker"></span>
+  <main id="main">
+    <!-- ======= About Section ======= -->
+    <section id="about" class="about-mf sect-pt4 route">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="box-shadow-full">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-sm-6 col-md-5">
+                      <div class="about-img">
+                        <img
+                          src="{{ users.image.url }}"
+                          class="img-fluid rounded b-shadow-a"/>
+                      </div>
+                    </div>
+                    <div class="col-sm-6 col-md-7">
+                      <div class="about-info">
+                        <p>
+                          <span class="title-s">Name: </span>
+                          <span>{{ users.get_full_name }}</span>
+                        </p>
+                        <p>
+                          <span class="title-s">Profile: </span>
+                          <span>{{ users.job }}</span>
+                        </p>
+                        <p>
+                          <span class="title-s">Email: </span>
+                          <span>{{ users.email }}</span>
+                        </p>
+                        <p>
+                          <span class="title-s">Phone: </span>
+                          <span>{{ users.phone }}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="skill-mf">
+                    <p class="title-s">Skill</p>
+                    {% for skill in skills %}
+                        <span>{{ skill.title }}</span>
+                        <span class="pull-right">{{ skill.level }}%</span>
+                        {% if request.user.is_authenticated and users.id == request.user.id %}
+                            <a href="{% url 'update-skill' skill.pk %}"> Update</a>
+                            <a href="{% url 'delete-skill' skill.pk %}"> Delete</a>
+                        {% endif %}
+                        <div class="progress">
+                        <div
+                            class="progress-bar"
+                            role="progressbar"
+                            style="width: {{ skill.level }}%"
+                            aria-valuenow="85"
+                            aria-valuemin="0"
+                            aria-valuemax="100">
+                        </div>
+                        </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="about-me pt-4 pt-md-0">
+                    <div class="title-box-2">
+                      <h5 class="title-left">About me</h5>
+                    </div>
+                    <p class="lead">{{ users.about_me }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End About Section -->
+
+    <!-- ======= Services Section ======= -->
+    <section id="services" class="services-mf pt-5 route">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="title-box text-center">
+              <h3 class="title-a">Services</h3>
+              <p class="subtitle-a">
+                Our services and affordable prices for you.
+              </p>
+              <div class="line-mf"></div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          {% for service in services %}
+            <div class="col-md-4">
+                <div class="service-box">
+                <div class="service-ico">
+                    <span class="ico-circle"><i class="bi bi-briefcase"></i></span>
+                </div>
+                <div class="service-content">
+                    <h2 class="s-title">{{ service.title }}</h2>
+                    <p class="s-description text-center">
+                    {{ service.description|slice:150 }}
                     </p>
-                    <!-- <p class="pt-3"><a class="btn btn-primary btn js-scroll px-4" href="#about" role="button">Learn More</a></p> -->
+                </div>
+                {% if request.user.is_authenticated and users.id == request.user.id %}
+                    <a href="{% url 'update-service' service.pk %}">Update</a>
+                    <a href="{% url 'delete-service' service.pk %}">Delete</a>
+                {% endif %}
                 </div>
             </div>
+          {% endfor %}
         </div>
-    </div><!-- End Hero Section -->
+      </div>
+    </section>
+    <!-- End Services Section -->
 
-    <main id="main">
-
-        <!-- ======= About Section ======= -->
-        <section id="about" class="about-mf sect-pt4 route">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="box-shadow-full">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-5">
-                                            <div class="about-img">
-                                                <img src="{{ personal.image.url }}"
-                                                     class="img-fluid rounded b-shadow-a" alt="">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-7">
-                                            <div class="about-info">
-                                                <p><span class="title-s">Name: </span>
-                                                    <span>{{ user.get_full_name }}</span>
-                                                </p>
-                                                <p><span class="title-s">Profile: </span>
-                                                    <span>{{ personal.profile }}</span>
-                                                </p>
-                                                {#                        <p><span class="title-s">Email: </span> <span>mirsidiq3421@gmail.com</span></p>#}
-                                                <div class="info_link-box">
-                                                    <a href="mailto:mirsiddiqmirzokirov@gmail.com">
-                                                        <img src="{% static 'img/black_email.png' %}" alt="">
-                                                        <span>{{ user.email }}</span>
-                                                    </a>
-                                                    <div>
-
-                                                    </div>
-                                                    <a href="tel:+998 77 011 64 04">
-                                                        <img src="{% static 'img/telephone.png' %}" alt="">
-                                                        <span class="title-s"> </span>
-                                                        <span>{{ personal.tel_num }}</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- home.html -->
-                                    <div class="skill-mf">
-                                        <p class="title-s">Skill</p>
-                                        {% for skill in skills %}
-                                            <span><strong>{{ skill.name }}</strong></span>
-                                            <span class="pull-right">{{ skill.percentage }}%</span>
-                                            <div class="progress">
-                                                <div class="progress-bar" role="progressbar"
-                                                     style="width: {{ skill.percentage }}%;"
-                                                     aria-valuenow="{{ skill.percentage }}" aria-valuemin="0"
-                                                     aria-valuemax="100"></div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                {% for about_me in about_me %}
-                                    <div class="col-md-6">
-                                        <div class="about-me pt-4 pt-md-0">
-                                            <div class="title-box-2">
-                                                <h5 class="title-left">
-                                                    About me
-                                                </h5>
-                                            </div>
-                                            <span class="lead">
-                                    {{ about_me.about_me }}
-                                </span>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+    <!-- ======= Counter Section ======= -->
+    <div class="section-counter paralax-mf bg-image" style="background-image: url({% static '/img/counters-bg.jpg' %})">
+      <div class="overlay-mf"></div>
+      <div class="container position-relative">
+        <div class="row">
+          <div class="col-sm-3 col-lg-3">
+            <div class="counter-box counter-box pt-4 pt-md-0">
+              <div class="counter-ico">
+                <span class="ico-circle"><i class="bi bi-check"></i></span>
+              </div>
+              <div class="counter-num">
+                <p data-purecounter-start="0" data-purecounter-end="{{ portfolios.count }}" data-purecounter-duration="1" class="counter purecounter"></p>
+                <span class="counter-text">WORKS COMPLETED</span>
+              </div>
             </div>
-
-        </section><!-- End About Section -->
-
-        <!-- ======= Services Section ======= -->
-        <section id="services" class="services-mf pt-5 route">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="title-box text-center">
-                            <h3 class="title-a">
-                                Services
-                            </h3>
-                            <p class="subtitle-a">
-                                Here you can find the types of service you need 😎
-                            </p>
-                            <div class="line-mf"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    {% for service in services %}
-                        <div class="col-md-4">
-                            <div class="service-box">
-                                <div class="service-ico">
-                                    <span class="ico-circle"><i class="bi bi-briefcase"></i></span>
-                                </div>
-                                <div class="service-content">
-                                    <span class="s-title"><strong>{{ service.name }}</strong></span>
-                                    <div>
-                                    </div>
-                                    <span class="s-description text-center">{{ service.description }}
-                                </span>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+          </div>
+          <div class="col-sm-3 col-lg-3">
+            <div class="counter-box pt-4 pt-md-0">
+              <div class="counter-ico">
+                <span class="ico-circle"><i class="bi bi-journal-richtext"></i></span>
+              </div>
+              <div class="counter-num">
+                <p data-purecounter-start="0" data-purecounter-end="{{ statis.year }}" data-purecounter-duration="1" class="counter purecounter"></p>
+                <span class="counter-text">YEARS OF EXPERIENCE</span>
+              </div>
             </div>
-        </section><!-- End Services Section -->
-
-        <!-- ======= Counter Section ======= -->
-        <div class="section-counter paralax-mf bg-image"
-             style="background-image: url({% static 'img/counters-bg.jpg' %})">
-            <div class="overlay-mf"></div>
-            <div class="container position-relative">
-                <div class="row">
-                    {% for priz in priz %}
-                        <div class="col-sm-3 col-lg-3">
-                            <div class="counter-box counter-box pt-4 pt-md-0">
-                                <div class="counter-ico">
-                                    <span class="ico-circle"><i class="bi bi-check"></i></span>
-                                </div>
-                                <div class="counter-num">
-                                <span data-purecounter-start="0" data-purecounter-end="{{ priz.amount }}"
-                                      data-purecounter-duration="1"
-                                      class="counter purecounter"></span>
-                                    <span class="counter-text"><big><big><strong>{{ priz.title }}</strong></big></big></span>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+          </div>
+          <div class="col-sm-3 col-lg-3">
+            <div class="counter-box pt-4 pt-md-0">
+              <div class="counter-ico">
+                <span class="ico-circle"><i class="bi bi-people"></i></span>
+              </div>
+              <div class="counter-num">
+                <p data-purecounter-start="0" data-purecounter-end="{{ statis.total_client }}" data-purecounter-duration="1" class="counter purecounter"></p>
+                <span class="counter-text">TOTAL CLIENTS</span>
+              </div>
             </div>
-        </div><!-- End Counter Section -->
-
-        <!-- ======= Portfolio Section ======= -->
-        <section id="work" class="portfolio-mf sect-pt4 route">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="title-box text-center">
-                            <h3 class="title-a">
-                                Portfolio
-                            </h3>
-                            <p class="subtitle-a">
-                                XUSH KEBSIZ, XUY KETASIZ
-                            </p>
-                            <div class="line-mf"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    {% for main_portfolio in main_portfolios %}
-                        <div class="col-md-4">
-                            <div class="work-box">
-                                <a href="{{ main_portfolio.images.first.image.url }}" data-gallery="portfolioGallery"
-                                   class="portfolio-lightbox">
-                                    <div class="work-img">
-                                        <img src="{{ main_portfolio.images.first.image.url }}" alt="" class="img-fluid">
-                                    </div>
-                                </a>
-                                <div class="work-content">
-                                    <div class="row">
-                                        <div class="col-sm-8">
-                                            <h2 class="w-title">{{ main_portfolio.name }}</h2>
-                                            <div class="w-more">
-                                                <span class="w-ctegory">{{ main_portfolio.category }}</span> / <span
-                                                    class="w-date">{{ main_portfolio.project_date }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <div class="w-like">
-                                                <a href="{% url 'portfolio_details' main_portfolio.id %}"> <span
-                                                        class="bi bi-plus-circle"></span></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+          </div>
+          <div class="col-sm-3 col-lg-3">
+            <div class="counter-box pt-4 pt-md-0">
+              <div class="counter-ico">
+                <span class="ico-circle"><i class="bi bi-award"></i></span>
+              </div>
+              <div class="counter-num">
+                <p data-purecounter-start="0" data-purecounter-end="{{ statis.won }}" data-purecounter-duration="1" class="counter purecounter"></p>
+                <span class="counter-text">AWARD WON</span>
+              </div>
             </div>
-        </section>
-
-        <!-- End Portfolio Section -->
-
-        <!-- ======= Testimonials Section ======= -->
-        <div class="testimonials paralax-mf bg-image" style="background-image: url({% static 'img/overlay-bg.jpg' %})">
-            <div class="overlay-mf"></div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="testimonials-slider swiper swiper-initialized swiper-horizontal swiper-pointer-events swiper-backface-hidden"
-                             data-aos="fade-up" data-aos-delay="100">
-                            <div class="swiper-wrapper" id="swiper-wrapper-1038f27d1eb91c141" aria-live="off"
-                                 style="transform: translate3d(-1548px, 0px, 0px); transition-duration: 0ms;">
-                                {% for customer_opinion in customer_opinion %}
-                                    <div class="swiper-slide swiper-slide-prev swiper-slide-duplicate-next"
-                                         data-swiper-slide-index="0" role="group" aria-label="1 / 2">
-                                        <div class="testimonial-box">
-                                            <div class="author-test">
-                                                <img src="{% static 'img/unknown-person.svg' %}" alt=""
-                                                     class="rounded-circle b-shadow-a">
-                                                <span class="author">{{ customer_opinion.name }}</span>
-                                            </div>
-                                            <div class="content-test">
-                                                <span class="description lead">
-                                                    {{ customer_opinion.description }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                                <!-- End testimonial item -->
-                            </div>
-                            <div class="swiper-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal">
-                                <span class="swiper-pagination-bullet" tabindex="0" role="button"
-                                      aria-label="Go to slide 1"></span><span
-                                    class="swiper-pagination-bullet swiper-pagination-bullet-active" tabindex="0"
-                                    role="button" aria-label="Go to slide 2" aria-current="true"></span></div>
-                            <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
-                        </div>
-
-                        <!-- <div id="testimonial-mf" class="owl-carousel owl-theme"> -->
-
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-        <!-- End Testimonials Section -->
+      </div>
+    </div>
+    <!-- End Counter Section -->
 
-        <!-- ======= Blog Section ======= -->
-        <section id="blog" class="blog-mf sect-pt4 route">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="title-box text-center">
-                            <h3 class="title-a">
-                                Blog
-                            </h3>
-                            <p class="subtitle-a">
-                                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            </p>
-                            <div class="line-mf"></div>
+    <!-- ======= Portfolio Section ======= -->
+    <section id="work" class="portfolio-mf sect-pt4 route">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="title-box text-center">
+              <h3 class="title-a">Portfolio</h3>
+              <p class="subtitle-a">
+                This is where I write down what I've done and what projects I've
+                worked on.
+              </p>
+              <div class="line-mf"></div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          {% for portfolio in portfolios %}
+            <div class="col-md-4">
+                <div class="work-box">
+                <a
+                    href="{{ portfolio.image.url }}"
+                    data-gallery="portfolioGallery"
+                    class="portfolio-lightbox">
+                    <div class="work-img">
+                    <img src="{{ portfolio.image.url }}" class="img-fluid" />
+                    </div>
+                </a>
+                <div class="work-content">
+                    <div class="row">
+                    <div class="col-sm-8">
+                        <h2 class="w-title">{{ portfolio.title }}</h2>
+                        <div class="w-more">
+                        <span class="w-ctegory">{{ portfolio.get_category_display }}</span>
+                        <span class="w-date">{{ portfolio.create_at }}</span>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    {% for blogs in blog %}
-                        <div class="col-md-4">
-                            <div class="card card-blog">
-                                <div class="card-img">
-                                    <a href="{% url 'post' blogs.pk %}"><img src="{{ blogs.images.first.image.url }}" alt=""
-                                                                class="img-fluid"></a>
-                                </div>
-                                <div class="card-body">
-                                    <div class="card-category-box">
-                                        <div class="card-category">
-                                            <h6 class="category"><a
-                                                    href="/blog_single">{{ blogs.category }}</a>
-                                            </h6>
-                                        </div>
-                                    </div>
-                                    <h3 class="card-title"><a
-                                            href="/blog_single">{{ blogs.name }}</a>
-                                    </h3>
-                                    <p class="card-description">
-                                        {{ blogs.description }}
-                                    </p>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="post-author">
-                                        <a href="/">
-                                            <img src="{% static 'img/testimonial-2.jpg' %}" alt=""
-                                                 class="avatar rounded-circle">
-                                            <span class="author">{{ user.get_full_name }}</span>
-                                        </a>
-                                    </div>
-                                    <div class="post-date">
-                                        <span class="bi bi-clock"> {{ blogs.upload_at }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
-        {#        </section><!-- End Blog Section -->#}
-
-        <!-- ======= Contact Section ======= -->
-        <section id="contact" class="paralax-mf footer-paralax bg-image sect-mt4 route"
-                 style="background-image: url({% static 'img/overlay-bg.jpg' %})">
-            <div class="overlay-mf"></div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="contact-mf">
-                            <div id="contact" class="box-shadow-full">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="title-box-2">
-                                            <h5 class="title-left">Send Message Me</h5>
-                                        </div>
-                                        <div>
-                                            <form method="post">
-                                                {% csrf_token %}
-                                                <div class="row">
-                                                    <div class="col-md-12 mb-3">
-                                                        <div class="form-group">
-                                                            <input type="text" name="name" class="form-control"
-                                                                   id="name" placeholder="Your Name" required/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-12 mb-3">
-                                                        <div class="form-group">
-                                                            <input type="email" class="form-control" name="email"
-                                                                   id="email" placeholder="Your Email" required/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <textarea class="form-control" name="text" rows="5"
-                                                                      placeholder="Message" required></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-12 text-center">
-                                                        <button
-                                                                type="submit"
-                                                                class="button button-a button-big button-rouded">
-                                                            Send Message
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="title-box-2 pt-4 pt-md-0">
-                                            <h5 class="title-left">
-                                                Get in Touch
-                                            </h5>
-                                        </div>
-                                        <div class="more-info">
-                                            <p class="lead">
-                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis dolorum
-                                                dolorem soluta quidem
-                                                expedita aperiam aliquid at.
-                                                Totam magni ipsum suscipit amet? Autem nemo esse laboriosam ratione
-                                                nobis
-                                                mollitia inventore?
-                                            </p>
-                                            <ul class="list-ico">
-                                                <li>
-                                                    <a href="https://www.google.com/maps/dir/41.3260875,69.2281415/location+of+uzbekistan+tashkent+PDP+Academy/@41.3258673,69.2269394,17z/data=!3m1!4b1!4m9!4m8!1m1!4e1!1m5!1m1!1s0x38ae8bb7a0ebbae3:0xf9e01b5d45fc68cd!2m2!1d69.2284847!2d41.3264751?entry=ttu"><span
-                                                            class="bi bi-geo-alt"></span></a> UZBEKISTAN, TASHKENT, PDP
-                                                    Academy
-                                                </li>
-                                                <li>
-                                                    <a href="tel:+998 77 011 64 04"><span
-                                                            class="bi bi-phone"></span></a> +998 77 011 64 04
-                                                </li>
-                                                <li>
-                                                    <a href="mailto:mirsidiqmirzokirov@gmail.com"><span
-                                                            class="bi bi-envelope"></span></a>
-                                                    mirsidiqmirzokirov@gmail.com
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="socials">
-                                            <ul>
-                                                <li><a href="https://www.facebook.com/mirsidiq.mirsidiq.9"><span
-                                                        class="ico-circle"><i class="bi bi-facebook"></i></span></a>
-                                                </li>
-                                                <li><a href="https://www.instagram.com/m.mirzokiroff/"><span
-                                                        class="ico-circle"><i class="bi bi-instagram"></i></span></a>
-                                                </li>
-                                                <li><a href="https://twitter.com/mirzokirof878?s=21"><span
-                                                        class="ico-circle"><i class="bi bi-twitter"></i></span></a></li>
-                                                <li>
-                                                    <a href="https://www.linkedin.com/in/mirsidiq-mirzokirov-a16b0b275"><span
-                                                            class="ico-circle"><i class="bi bi-linkedin"></i></span></a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="col-sm-4">
+                        <div class="w-like">
+                        <a href="{% url 'portfolio' portfolio.pk %}">
+                            <span class="bi bi-plus-circle"></span>
+                        </a>
                         </div>
                     </div>
+                    </div>
+                </div>
                 </div>
             </div>
-        </section>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    <!-- End Portfolio Section -->
 
-        <!-- End Contact Section -->
-    </main><!-- End #main -->
+    <!-- ======= Testimonials Section ======= -->
+    <div class="testimonials paralax-mf bg-image" style="background-image: url({% static '/img/overlay-bg.jpg' %})">
+      <div class="overlay-mf"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              class="testimonials-slider swiper"
+              data-aos="fade-up"
+              data-aos-delay="100">
+              <div class="swiper-wrapper">
+                {% for partner in partners %}
+                  <div class="swiper-slide">
+                    <div class="testimonial-box">
+                      <div class="author-test">
+                        <img
+                          src="{% static 'img/unknown-person.svg' %}"
+                          class="rounded-circle b-shadow-c"
+                          alt="Bu Joyda Rasm bor"/>
+                        <span class="author">{{ partner.fullname }}</span>
+                      </div>
+                      <div class="content-test">
+                        <p class="description lead">{{ partner.text }}</p>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+              <div class="swiper-pagination"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Testimonials Section -->
 
-    <!-- ======= Footer ======= -->
+    <!-- ======= Blog Section ======= -->
+    <section id="blog" class="blog-mf sect-pt4 route">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="title-box text-center">
+              <h3 class="title-a">Blog</h3>
+              <p class="subtitle-a">
+                Here I will share my knowledge and experience.
+              </p>
+              <div class="line-mf"></div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          {% for blog in blogs %}
+            <div class="col-md-4">
+              <div class="card card-blog">
+                <div class="card-img">
+                  <a href="{% url 'post' blog.pk %}"><img src="{{ blog.image.url }}" alt="" class="img-fluid"/></a>
+                </div>
+                <div class="card-body">
+                  <div class="card-category-box">
+                    <div class="card-category">
+                      <h6 class="category">Travel</h6>
+                    </div>
+                  </div>
+                  <h3 class="card-title">
+                    <a href="{% url 'post' blog.pk %}">{{ blog.title }}</a>
+                  </h3>
+                  <p class="card-description">{{ blog.description|slice:200 }}</p>
+                </div>
+                <div class="card-footer">
+                  <div class="post-author">
+                    <a href="#">
+                      <img
+                        src="{{ users.image.url }}"
+                        alt=""
+                        class="avatar rounded-circle"/>
+                      <span class="author">{{ users.get_full_name }}</span>
+                    </a>
+                  </div>
+                  <div class="post-date">
+                    <span class="bi bi-clock"></span> {{ blog.created_at|date }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    <!-- End Blog Section -->
 
-    </body>
+    <!-- ======= Contact Section ======= -->
+    <section
+      id="contact"
+      class="paralax-mf footer-paralax bg-image sect-mt4 route"
+      style="background-image: url({% static '/img/overlay-bg.jpg' %})">
+      <div class="overlay-mf"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="contact-mf">
+              <div id="contact" class="box-shadow-full">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="title-box-2">
+                      <h5 class="title-left">Send Message Me</h5>
+                    </div>
+                    <div>
+                      <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                          <div class="col-md-12 mb-3">
+                            <div class="form-group">
+                              <input
+                                type="text"
+                                name="name"
+                                class="form-control"
+                                id="name"
+                                placeholder="Your Name"
+                                required/>
+                            </div>
+                          </div>
+                          <div class="col-md-12 mb-3">
+                            <div class="form-group">
+                              <input
+                                type="email"
+                                class="form-control"
+                                name="email"
+                                id="email"
+                                placeholder="Your Email"
+                                required/>
+                            </div>
+                          </div>
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <textarea
+                                class="form-control"
+                                name="text"
+                                rows="5"
+                                placeholder="Message"
+                                required>
+                            </textarea>
+                            </div>
+                          </div>
+                          <div class="col-md-12 text-center">
+                            <button
+                              type="submit"
+                              class="button button-a button-big button-rouded">Send Message
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="title-box-2 pt-4 pt-md-0">
+                      <h5 class="title-left">Get in Touch</h5>
+                    </div>
+                    <div class="more-info">
+                      <p class="lead">
+                        Send your message to contact me, I will reply to your
+                        email soon, if you haven't received messages sent by
+                        users, please register in
+                        <a href="https://t.me/Developer_Oybek_bot">Telegram Bot</a> and don't forget to save your Telegram ID!
+                      </p>
+                      <ul class="list-ico">
+                        <li>
+                          <a href="https://www.google.com/maps/dir/41.3260875,69.2281415/location+of+uzbekistan+tashkent+PDP+Academy/@41.3258673,69.2269394,17z/data=!3m1!4b1!4m9!4m8!1m1!4e1!1m5!1m1!1s0x38ae8bb7a0ebbae3:0xf9e01b5d45fc68cd!2m2!1d69.2284847!2d41.3264751?entry=ttu"><span class="bi bi-geo-alt"></span></a>
+                          {{ users.state }}, {{ users.city }}, {{ users.street}}
+                        </li>
+                        <li>
+                          <a href="tel:{{ users.phone }}"><span class="bi bi-phone"> {{ users.phone }}</span></a>
+                        </li>
+                        <li>
+                          <a href="mailto:{{ users.email }}"><span class="bi bi-envelope"> {{ users.email }}</span></a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="socials">
+                      <ul>
+                        <li>
+                          <a href="{{ user.telegram }}"><span class="ico-circle"><i class="bi bi-telegram"></i></span></a>
+                        </li>
+                        <li>
+                          <a href="{{ user.instagram }}"><span class="ico-circle"><i class="bi bi-instagram"></i></span></a>
+                        </li>
+                        <li>
+                          <a href=""><span class="ico-circle"><i class="bi bi-twitter"></i></span></a>
+                        </li>
+                        <li>
+                          <a href=""><span class="ico-circle"><i class="bi bi-linkedin"></i></span></a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End Contact Section -->
+  </main>
+  <!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+</body>
 {% endblock %}
-

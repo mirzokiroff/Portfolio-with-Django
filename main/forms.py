@@ -1,64 +1,60 @@
-from django import forms
+from django.forms import ModelForm
+from django.contrib.auth.forms import UserCreationForm
+from .models import User, Skill, Service, Blog, Portfolio, PartnerComment, Statistic
 
-from .models import Skill, Services, PortfolioInfo, Blog, Priz, About_me, CustomerOpinion, BlogSingle, \
-    PersonalInfo
 
-
-class PersonalInfoForm(forms.ModelForm):
+class SignUpForm(UserCreationForm):
     class Meta:
-        model = PersonalInfo
-        fields = ['profile', 'tel_num', 'image']
+        model = User
+        fields = ('first_name', 'last_name', 'username', 'image', 'phone', 'email', 'job', 'password1', 'password2')
 
 
-class SkillForm(forms.ModelForm):
+class UpdateForm(ModelForm):
+    class Meta:
+        model = User
+        fields = (
+            'first_name', 'last_name', 'image', 'phone', 'email', 'job', 'about_me', 'street', 'city', 'state',
+            'telegram',
+            'instagram', 'telegram_id')
+
+
+class AddSkillForm(ModelForm):
     class Meta:
         model = Skill
-        fields = ['name', 'percentage']
+        fields = ('title', 'level')
 
 
-class About_meForm(forms.ModelForm):
+class ServiceForm(ModelForm):
     class Meta:
-        model = About_me
-        fields = ['about_me']
+        model = Service
+        fields = ('title', 'description')
 
 
-class ServiceForm(forms.ModelForm):
-    class Meta:
-        model = Services
-        fields = ['name', 'description']
-
-
-class PortfolioDetailsForm(forms.ModelForm):
-    class Meta:
-        model = PortfolioInfo
-        fields = ['category', 'client', 'project_url', 'example_detail']
-
-
-class BlogForm(forms.ModelForm):
+class AddBlogForm(ModelForm):
     class Meta:
         model = Blog
-        fields = ['name', 'category', 'description']
+        fields = ('user_id', 'image', 'title', 'description')
 
 
-class PrizForm(forms.ModelForm):
+class AddPortfolioForm(ModelForm):
     class Meta:
-        model = Priz
-        fields = ['title', 'amount']
+        model = Portfolio
+        fields = ('image', 'title', 'category', 'description', 'company', 'project_url')
 
 
-class CustomerOpForm(forms.ModelForm):
+class UpdateBlogForm(ModelForm):
     class Meta:
-        model = CustomerOpinion
-        fields = ['name', 'description']
+        model = Blog
+        fields = ('image', 'title', 'description')
 
 
-# class MainPortfolioForm(forms.ModelForm):
-#     class Meta:
-#         model = MainPortfolio
-#         fields = ['title', 'category']
-
-
-class BlogDetailsForm(forms.ModelForm):
+class StatisticForm(ModelForm):
     class Meta:
-        model = BlogSingle
-        fields = ['title', 'name', 'job', 'comment', 'article', 'main_data']
+        model = Statistic
+        fields = ('year', 'total_client', 'won')
+
+
+class PartnerCommentForm(ModelForm):
+    class Meta:
+        model = PartnerComment
+        fields = ('fullname', 'email', 'text')
