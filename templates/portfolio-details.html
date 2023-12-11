@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block container %}
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><a href="{% url 'user' users.username %}">DevFolio</a></h1>
+      <nav id="navbar" class="navbar">
+        <ul>
+        {% if request.user.is_authenticated and users.id == request.user.id %}
+          <li><a class="nav-link scrollto" href="{% url 'update-portfolio' portfolio.pk %}">Update Portfolio</a></li>
+          <li><a class="nav-link scrollto" href="{% url 'delete-portfolio' portfolio.pk %}">Delete Portfolio</a></li>
+        {% endif %}
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav>
+    </div>
+  </header>
+  <!-- End Header -->
+    <div class="hero hero-single route bg-image" style="background-image: url({% static 'img/overlay-bg.jpg' %})">
+        <div class="overlay-mf"></div>
+        <div class="hero-content display-table">
+            <div class="table-cell">
+                <div class="container">
+                    <h2 class="hero-title mb-4">Portfolio Details</h2>
+                    <ol class="breadcrumb d-flex justify-content-center">
+                        <li class="breadcrumb-item">
+                            <a href="/">Home</a>
+                        </li>
+                        <li class="breadcrumb-item active">Portfolio Details</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main id="main">
+    <!-- ======= Portfolio Details Section ======= -->
+    <section id="portfolio-details" class="portfolio-details">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-8">
+                    <div class="portfolio-details-slider swiper">
+                        <div class="swiper-wrapper align-items-center">
+                            <div class="swiper-slide">
+                                <img src="{{portfolio.image.url}}" alt="">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'img/portfolio-details-2.jpg' %}" alt="">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'img/portfolio-details-3.jpg' %}" alt="">
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="portfolio-info">
+                        <h3>Project information</h3>
+                        <ul>
+                            <li><strong>Category</strong>: {{portfolio.get_category_display}}</li>
+                            <li><strong>Client</strong>: {{portfolio.company}}</li>
+                            <li><strong>Project date</strong>: {{portfolio.create_at}}</li>
+                            <li><strong>Project URL</strong>: <a href="{{portfolio.project_url}}">{{portfolio.project_url}}</a></li>
+                        </ul>
+                    </div>
+                    <div class="portfolio-description">
+                        <h2>{{portfolio.title}}</h2>
+                        <p>
+                            {{portfolio.description}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- End Portfolio Details Section -->
+    </main><!-- End #main -->
+</body>
+</html>
+{% endblock %}

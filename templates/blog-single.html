@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block container %}
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><a href="{% url 'user' user.username %}">DevFolio</a></h1>
+      <nav id="navbar" class="navbar">
+        <ul>
+          {% if request.user.is_authenticated and user.id == request.user.id %}
+          <li><a class="nav-link scrollto" href="{% url 'update-blog' post.pk %}">Update Post</a></li>
+          <li><a class="nav-link scrollto" href="{% url 'delete-blog' post.pk %}">Delete Post</a></li>
+          {% endif %}
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav>
+    </div>
+  </header>
+  <!-- End Header -->
+  <div class="hero hero-single route bg-image" style="background-image: url({% static 'img/overlay-bg.jpg' %})">
+    <div class="overlay-mf"></div>
+    <div class="hero-content display-table">
+      <div class="table-cell">
+        <div class="container">
+          <h2 class="hero-title mb-4">Blog Details</h2>
+          <ol class="breadcrumb d-flex justify-content-center">
+            <li class="breadcrumb-item">
+              <a href="#">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="#">Library</a>
+            </li>
+            <li class="breadcrumb-item active">Data</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main id="main">
+    <!-- ======= Blog Single Section ======= -->
+    <section class="blog-wrapper sect-pt4" id="blog">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="post-box">
+              <div class="post-thumb">
+                <img src="{{post.image.url}}" class="img-fluid" alt="">
+              </div>
+              <div class="post-meta">
+                <h1 class="article-title">{{post.title}}</h1>
+                <ul>
+                  <li>
+                    <span class="bi bi-person"></span>
+                    <a href="">{{user.get_full_name}}</a>
+                  </li>
+                  <li>
+                    <span class="bi bi-tag"></span>
+                    <a href="">{{user.job}}</a>
+                  </li>
+                  <li>
+                    <span class="bi bi-chat-left-text"></span>
+                    <a href="#">{{comments.count}}</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="article-content">
+                <p>
+                  {{post.description}}
+                </p>
+              </div>
+            </div>
+            <div class="box-comments">
+              <div class="title-box-2">
+                <h4 class="title-comments title-left">Comments ({{comments.count}})</h4>
+              </div>
+              <ul class="list-comments">
+                {% for comment in comments %}
+                  <li>
+                    <div class="comment-avatar">
+                      <img src="https://www.iconarchive.com/download/i143661/iconarchive/robot-avatar/Yellow-5-Minion.1024.png" alt="">
+                    </div>
+                    <div class="comment-details">
+                      <h4 class="comment-author">{{comment.fullname}}</h4>
+                      <span>{{comment.created_at}}</span>
+                      <p>
+                        {{comment.text}}
+                      </p>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div class="form-comments">
+              <div class="title-box-2">
+                <h3 class="title-left">
+                  Leave a Reply
+                </h3>
+              </div>
+              <form class="form-mf" method="post" action="{% url 'post' post.id %}" enctype="multipart/form-data" value="">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                      <input type="text" class="form-control input-mf" name="fullname" id="inputName" placeholder="Name *" value="">
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                      <input type="email" class="form-control input-mf" name="email" id="inputEmail1" placeholder="Email *" value="">
+                    </div>
+                  </div>
+                  <div class="col-md-12 mb-3">
+                    <div class="form-group">
+                      <textarea id="textMessage" class="form-control input-mf" placeholder="Comment *" name="text" cols="45" rows="8" value=""></textarea>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <button type="submit" class="button button-a button-big button-rouded">Send Message</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <form method="get" class="widget-sidebar sidebar-search">
+              <h5 class="sidebar-title">Search</h5>
+              <div class="sidebar-content">
+                <form>
+                  <div class="input-group">
+                    <input type="text" name='s' class="form-control" placeholder="Search for..." aria-label="Search for...">
+                    <span class="input-group-btn">
+                      <button class="btn btn-secondary btn-search" type="button">
+                        <span class="bi bi-search"></span>
+                      </button>
+                    </span>
+                  </div>
+                </form>
+              </div>
+            </form>
+            {% if searchs %}
+              <div class="widget-sidebar">
+                <h5 class="sidebar-title">Search Results</h5>
+                <div class="sidebar-content">
+                  <ul class="list-sidebar">
+                    {% for search in searchs %}
+                      <li>
+                        <a href="{% url 'post' search.pk %}">{{search.title}}</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            {% endif %}
+            <div class="widget-sidebar">
+              <h5 class="sidebar-title">Recent Post</h5>
+              <div class="sidebar-content">
+                <ul class="list-sidebar">
+                  {% for blog in posts %}
+                    <li>
+                      <a href="{% url 'post' blog.pk %}">{{blog.title}}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+            <div class="widget-sidebar widget-tags">
+              <h5 class="sidebar-title">Tags</h5>
+              <div class="sidebar-content">
+                <ul>
+                  <li>
+                    <a href="#">Web.</a>
+                  </li>
+                  <li>
+                    <a href="#">Design.</a>
+                  </li>
+                  <li>
+                    <a href="#">Travel.</a>
+                  </li>
+                  <li>
+                    <a href="#">Photoshop</a>
+                  </li>
+                  <li>
+                    <a href="#">Corel Draw</a>
+                  </li>
+                  <li>
+                    <a href="#">JavaScript</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- End Blog Single Section -->
+  </main><!-- End #main -->
+</body>
+
+</html>
+{% endblock container %}
